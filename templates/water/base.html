@@ -245,66 +245,61 @@
             $('#c1').change(function () {
                 $.ajax({
                     url: "{% url 'choose_city' %}",
-                    { #type: 'post',#}
                     dataType: 'json',
                     data: {
-                    'pid': $('#c1').val(),
-                },
-                    { #async: false,#}
+                        'pid': $('#c1').val(),
+                    },
                     success: function (arg) {
-                    $('#c2').html(' <option>请选择城市</option> ');
-                    v = JSON.parse(arg);
-                    for (var city in v) {
-                        $('#c2').append('<option value="' + v[city].pk + '">' + v[city].fields.city + '</option>')
-                        { #$('#fc').remove()# }
+                        $('#c2').html(' <option>请选择城市</option> ');
+                        v = JSON.parse(arg);
+                        for (var city in v) {
+                            $('#c2').append('<option value="' + v[city].pk + '">' + v[city].fields.city + '</option>')
+                        }
                     }
-                }
-                })
-        });
-
-
-        $('#c2').change(function () {
-            $.ajax({
-                url: "{% url 'choose_factory' %}",
-                    { #type: 'post',#}
-                    dataType: 'json',
-                data: {
-                'cid': $('#c2').val(),
-            },
-                { #async: false,#}
-                    success: function (arg) {
-                v = JSON.parse(arg);
-                const res = new Map()
-                v = v.filter((a) => !res.has(a.fields.name) && res.set(a.fields.name, 1));
-                $('#fc').html('<li style="text-align: center;font-size: 35px;">工厂</li>')
-
-                for (var city in v) {
-                    $('#fc').append('<li><a id="' + v[city].pk + '" value="' + v[city].pk + '" >' + v[city].fields.name + '</a></li>')
-
-                }
-
-            }
                 })
             });
 
-        $(document).on('click', '#ce_id ul li a', function () {
-            $('#section_title').text($(this).text() + '工厂的部分水质数据')
-            $.ajax({
-                url: "{% url 'get_data' %}",
-                dataType: 'json',
-                data: {
-                    'name': $(this).text(),
-                },
-                success: function (arg) {
-                    v = JSON.parse(arg);
-                    $('#tbody_id').html('')
-                    for (var fac in v) {
-                        $('#tbody_id').append('<tr><td>' + v[fac].fields.name + '</td><td>' + v[fac].fields.date + '</td><td>' + v[fac].fields.ph + '</td><td>' + v[fac].fields.cod + '</td><td>' + v[fac].fields.nh4 + '</td><td>' + v[fac].fields.level + '</td></tr>')
+
+            $('#c2').change(function () {
+                $.ajax({
+                    url: "{% url 'choose_factory' %}",
+                    dataType: 'json',
+                    data: {
+                        'cid': $('#c2').val(),
+                    },
+                    success: function (arg) {
+                        v = JSON.parse(arg);
+                        const res = new Map()
+                        v = v.filter((a) => !res.has(a.fields.name) && res.set(a.fields.name, 1));
+                        $('#fc').html('<li style="text-align: center;font-size: 35px;">工厂</li>')
+
+                        for (var city in v) {
+                            $('#fc').append('<li><a id="' + v[city].pk + '" value="' + v[city].pk + '" >' + v[city].fields.name + '</a></li>')
+
+                        }
 
                     }
-                }
-            })
-        });
+                })
+            });
+
+            $(document).on('click', '#ce_id ul li a', function () {
+                $('#section_title').text($(this).text() + '工厂的部分水质数据')
+                $.ajax({
+                    url: "{% url 'get_data' %}",
+                    dataType: 'json',
+                    data: {
+                        'name': $(this).text(),
+                    },
+                    success: function (arg) {
+                        v = JSON.parse(arg);
+                        $('#tbody_id').html('')
+                        for (var fac in v) {
+                            $('#tbody_id').append('<tr><td>' + v[fac].fields.name + '</td><td>' + v[fac].fields.date + '</td><td>' + v[fac].fields.ph + '</td><td>' + v[fac].fields.cod + '</td><td>' + v[fac].fields.nh4 + '</td><td>' + v[fac].fields.level + '</td></tr>')
+
+                        }
+                    }
+                })
+            });
 
         })
 
