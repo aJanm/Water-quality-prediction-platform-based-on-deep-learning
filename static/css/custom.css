@@ -1,0 +1,19 @@
+.page-header {
+    padding-bottom: 9px;
+    margin: 40px 0 20px;
+    margin-top: 60px;
+    border-bottom: 1px solid #eee;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
+    margin-top: 50px;
+}
+form.form-signin {
+    margin-top: 50px;
+}

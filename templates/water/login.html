@@ -1,0 +1,51 @@
+{#{% extends "water/base.html" %}#}
+{#{% load staticfiles %}#}
+{##}
+{#{% block title %}#}
+{#    登录#}
+{#{% endblock %}#}
+{##}
+{#{% block body %}#}
+{#    <h1>登录</h1>#}
+{#    <form method="post" action="{% url 'user_login' %}">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <input type="submit" value="Log in"/>#}
+{#        <input type="hidden" name="next" value="{{ next }}"/>#}
+{#    </form>#}
+{#    <p>#}
+{##}
+{#{% endblock %}#}
+
+
+{% extends 'water/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    登录
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <form class="form-signin" method="post" action="{% url 'user_login' %}">
+            {% csrf_token %}
+            <h2 style="width: 300px;text-align: center" class="form-signin-heading">登录</h2>
+            <label for="text" class="sr-only">用户名</label>
+            <input style="width: 300px" type="text" id="username" name="username" class="form-control" placeholder="用户名" value="数计" required autofocus>
+            <label for="inputPassword" class="sr-only">密码</label>
+            <input style="width: 300px" type="password" id="inputPassword" name="password" class="form-control" placeholder="密码" value="asd123456" required>
+            <div class="checkbox">
+{#                <label>#}
+{#                    <input type="checkbox" value="remember-me"> 记住密码#}
+{#                </label>#}
+            </div>
+            <button style="width: 300px" class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+        </form>
+
+    </div> <!-- /container -->
+
+{% endblock %}
+
+
+

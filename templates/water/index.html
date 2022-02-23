@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+{% extends 'water/base.html' %}
+{% load staticfiles %}
+
+
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'images/crea3.png' %}">
+
+    <title>
+        {% block title %}
+        首页
+        {% endblock %}
+    </title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="http://v4-alpha.getbootstrap.com/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="http://v4-alpha.getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="http://v4-alpha.getbootstrap.com/assehttp://v4-alpha.getbootstrap.com/ie8-responsive-file-warning.js"></script>
+    <![endif]-->
+    <script
+        src="http://v4-alpha.getbootstrap.com/assehttp://v4-alpha.getbootstrap.com/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="https://v4-alpha.getbootstrap.com/examples/dashboard/dashboard.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
+
+    <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+    <script src="https://cdn.bootcss.com/moment.js/2.24.0/moment-with-locales.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+
+    <link rel="stylesheet" href="{% static 'css/myscc.css' %}">
+    {#
+    <script src="{% static 'js/myjs.js' %}"></script>#}
+    {% block date %}
+
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                {% block predict %}
+                {% if user.is_authenticated %}
+                <a class="navbar-brand" href="{% url 'index' %}">主页</a>
+                <a class="navbar-brand" href="{% url 'predict' %}">管理员界面</a>
+                {% else %}
+                <a class="navbar-brand" href="{% url 'index' %}">主页</a>
+                {% endif %}
+
+                {% endblock %}
+
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">退出</a></li>
+                    {% else %}
+                    <li><a href="{% url 'user_login' %}">登录</a></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar hidden-xs" id="ce_id">
+
+                <select class="form-control" name="" id="c1">
+                    <option>请选择省份</option>
+                    {% for pro in province %}
+                    <option value="{{ pro.id }}">{{ pro.name }}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-control" name="" id="c2">
+                    <option>请选择城市</option>
+                </select>
+                <br><br>
+
+                <ul class="nav nav-sidebar" id="fc">
+
+                </ul>
+
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1 class="page-header" style="text-align: center;">城市污水预测平台</h1>
+
+                <div class="container mycarousel" id="myConrainer">
+                    <div class="row">
+
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                            <!-- Indicators -->
+                            <ol class="carousel-indicators">
+                                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                            </ol>
+
+                            <!-- Wrapper for slides -->
+                            <div class="carousel-inner" role="listbox">
+                                <div class="item active">
+                                    <img src="{% static 'images/1.jpg' %}" alt="...">
+                                    <div class="carousel-caption">
+                                        <span style="font-size: 20px">不爱护环境，以后出门就会像这样</span>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <img src="{% static 'images/2.jpg' %}" alt="...">
+                                    <div class="carousel-caption">
+                                        <span style="font-size: 20px">攀枝花，如此多娇</span>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <img src="{% static 'images/4.jpg' %}" alt="...">
+                                    <div class="carousel-caption">
+                                        <span style="font-size: 20px">好的环境，如花一般绚烂</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Controls -->
+                            <a class="left carousel-control" href="#carousel-example-generic" role="button"
+                                data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" role="button"
+                                data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 class="sub-header" id="section_title">部分工厂水质数据</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>工厂名</th>
+                                <th>时间</th>
+                                <th>PH</th>
+                                <th>化学需氧量(COD)</th>
+                                <th>氨氮</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="tbody_id">
+
+                            {% for fac in page.page %}
+                            <tr>
+                                <td>{{ fac.name }}</td>
+                                <td>{{ fac.date }}</td>
+                                <td>{{ fac.ph }}</td>
+                                <td>{{ fac.cod }}</td>
+                                <td>{{ fac.nh4 }}</td>
+
+                            </tr>
+                            {% endfor %}
+
+
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation" style="text-align: center">
+                        <ul class="pagination">
+                            <li>
+                                {% if page.page.has_previous %}
+                                <a href="{% url 'index' %}?page={{ page.page.previous_page_number }}"
+                                    aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                                {% else %}
+                                <a aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                                {% endif %}
+                            </li>
+
+                            {% for p in page.page_range %}
+                            {% if p == page.page.number %}
+                            <li class="active"><span>{{ p }}</span></li>
+
+                            {% else %}
+                            {% if p == '...' %}
+                            <li><span>{{ p }}</span></li>
+                            {% else %}
+                            <li><a href="{% url 'index' %}?page={{ p }}">{{ p }}</a></li>
+                            {% endif %}
+
+                            {% endif %}
+
+                            {% endfor %}
+
+
+
+                            <li>
+                                {% if page.page.has_next %}
+                                <a href="{% url 'index' %}?page={{ page.page.next_page_number }}"
+                                    aria-label="Next">下一页</a>
+                                {% else %}
+                                <a aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            $('#c1').change(function () {
+                $.ajax({
+                    url: "{% url 'choose_city' %}",
+                    // { #type: 'post',#}
+                    dataType: 'json',
+                    data: {
+                        'pid': $('#c1').val(),
+                    },
+                    // { #async: false,#}
+                    success: function (arg) {
+                        $('#c2').html(' <option>请选择城市</option> ');
+                        v = JSON.parse(arg);
+                        for (var city in v) {
+                            $('#c2').append('<option value="' + v[city].pk + '">' + v[city].fields.city + '</option>')
+                            // { #$('#fc').remove()# }
+                        }
+                    }
+                })
+            });
+
+
+            $('#c2').change(function () {
+                $.ajax({
+                    url: "{% url 'choose_factory' %}",
+                    // { #type: 'post',#}
+                    dataType: 'json',
+                    data: {
+                        'cid': $('#c2').val(),
+                    },
+                    // { #async: false,#}
+                    success: function (arg) {
+                        v = JSON.parse(arg);
+                        const res = new Map()
+                        v = v.filter((a) => !res.has(a.fields.name) && res.set(a.fields.name, 1));
+                        $('#fc').html('<li style="text-align: center;font-size: 35px;">工厂</li>')
+
+                        for (var city in v) {
+                            $('#fc').append('<li><a id="' + v[city].pk + '" value="' + v[city].pk + '" >' + v[city].fields.name + '</a></li>')
+
+                        }
+
+                    }
+                })
+            });
+
+        });
+
+        $(document).on('click', '#ce_id ul li a', function () {
+            $('#section_title').text($(this).text() + '工厂的部分水质数据')
+            $.ajax({
+                url: "{% url 'get_data' %}",
+                dataType: 'json',
+                data: {
+                    'name': $(this).text(),
+                },
+                success: function (arg) {
+                    v = JSON.parse(arg);
+                    $('#tbody_id').html('')
+                    for (var fac in v) {
+                        $('#tbody_id').append('<tr><td>' + v[fac].fields.name + '</td><td>' + v[fac].fields.date + '</td><td>' + v[fac].fields.ph + '</td><td>' + v[fac].fields.cod + '</td><td>' + v[fac].fields.nh4 + '</td><td>' + v[fac].fields.level + '</td></tr>')
+
+                    }
+                }
+            })
+        });
+
+    </script>
+    {% endblock %}
+
+
+</body>
+
+</html>

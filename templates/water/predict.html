@@ -1,0 +1,314 @@
+{% extends 'water/base.html' %}
+
+{% block title %}
+{% if user.is_authenticated %}
+管理员 {{ user.username }} 已登录
+{% endif %}
+{% endblock %}
+
+
+
+
+{% block date %}
+
+{% endblock %}
+
+
+{% block body %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            {% block predict %}
+            {% if user.is_authenticated %}
+            <a class="navbar-brand" href="{% url 'index' %}">主页</a>
+            <a class="navbar-brand" href="{% url 'predict' %}">管理员界面</a>
+
+            {% endif %}
+
+            {% endblock %}
+
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">退出</a></li>
+                {% else %}
+                <li><a href="{% url 'user_login' %}">登录</a></li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar hidden-xs" id="ce_id">
+
+            <select class="form-control" name="" id="c1">
+                <option>请选择省份</option>
+                {% for pro in province %}
+                <option value="{{ pro.id }}">{{ pro.name }}</option>
+                {% endfor %}
+            </select>
+            <select class="form-control" name="" id="c2">
+                <option>请选择城市</option>
+            </select>
+            <br><br>
+
+            <ul class="nav nav-sidebar" id="fc">
+
+            </ul>
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <hr>
+            <div class="row">
+                <div class='col-sm-3'>
+                    <div class="form-group form-inline">
+                        <label>选择日期：</label>
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input id="time" type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+
+
+                        </div>
+                        <button onclick="data_click()" style="height: 34px">确认</button>
+                    </div>
+
+                </div>
+
+                <div class='col-sm-2'>
+                    <label>添加数据：</label><br>
+                    <form action="{% url 'excel_upload' %}" method="post" enctype="multipart/form-data">
+                        选择文件:<input id="myfile" type="file" name="file1" /><br />
+                        {# <input type="button" onclick="button_1()" value="上传" />#}
+                        <a onclick="button_1()" id="shangchuan" tabindex="0" class="btn btn-default" role="button"
+                            data-toggle="popover" data-trigger="focus" title="注意"
+                            data-content="若上传数据过大，请耐心等待1分钟，请勿持续点击">上传</a>
+
+                    </form>
+                </div>
+
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>工厂名</th>
+                            <th>时间</th>
+                            <th>PH</th>
+                            <th>化学需氧量(COD)</th>
+                            <th>氨氮</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_id1">
+
+                        {% for fac in page %}
+                        <tr>
+                            <td>{{ fac.name }}</td>
+                            <td>{{ fac.date }}</td>
+                            <td>{{ fac.ph }}</td>
+                            <td>{{ fac.cod }}</td>
+                            <td>{{ fac.nh4 }}</td>
+
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+            <hr>
+            <h2 class="sub-header" id="predict_data">预测</h2>
+            <!-- {# <button onclick="button_2()">预测</button>#} -->
+            <!-- {# <button onclick="button_2()" id="yuce" type="button" class="btn btn-default" data-toggle="popover"
+                title="注意" data-content="预测需要等待1-2分钟，请勿持续点击">预测</button>#} -->
+            <a onclick="button_2()" id="yuce" tabindex="0" class="btn btn-default" role="button" data-toggle="popover"
+                data-trigger="focus" title="注意" data-content="点击即预测，预测需要等待1-2分钟，请勿持续点击">预测</a>
+
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>工厂名</th>
+
+                            <th>PH</th>
+                            <th>化学需氧量(COD)</th>
+                            <th>氨氮</th>
+                            <th>水质级别</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_id">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+
+
+    $(function () {
+
+        $('#c1').change(function () {
+            $.ajax({
+                url: "{% url 'choose_city' %}",
+                dataType: 'json',
+                data: {
+                    'pid': $('#c1').val(),
+                },
+                success: function (arg) {
+                    $('#c2').html(' <option>请选择城市</option> ');
+                    v = JSON.parse(arg);
+                    for (var city in v) {
+                        $('#c2').append('<option value="' + v[city].pk + '">' + v[city].fields.city + '</option>')
+                    }
+                }
+            })
+        });
+
+
+        $('#c2').change(function () {
+            $.ajax({
+                url: "{% url 'choose_factory' %}",
+                dataType: 'json',
+                data: {
+                    'cid': $('#c2').val(),
+                },
+                success: function (arg) {
+
+                    v = JSON.parse(arg);
+                    const res = new Map()
+                    v = v.filter((a) => !res.has(a.fields.name) && res.set(a.fields.name, 1));
+                    $('#fc').html('<li style="text-align: center;font-size: 35px;">工厂</li>')
+                    for (var city in v) {
+                        $('#fc').append('<li><a id="' + v[city].pk + '" value="' + v[city].pk + '" >' + v[city].fields.name + '</a></li>')
+
+                    }
+
+                }
+            })
+        });
+
+        $(document).on('click', '#ce_id ul li a', function () {
+
+            $('#predict_data').text($(this).text() + '工厂的预测数据');
+            $.ajax({
+                url: "{% url 'get_data' %}",
+                dataType: 'json',
+                data: {
+                    'name': $(this).text(),
+                },
+                success: function (arg) {
+                    v = JSON.parse(arg);
+                    $('#tbody_id1').html('');
+                    for (var fac in v) {
+                        $('#tbody_id1').append('<tr><td>' + v[fac].fields.name + '</td><td>' + v[fac].fields.date + '</td><td>' + v[fac].fields.ph + '</td><td>' + v[fac].fields.cod + '</td><td>' + v[fac].fields.nh4 + '</td><td>' + v[fac].fields.level + '</td></tr>')
+
+                    }
+                }
+            })
+        });
+
+        $('#datetimepicker1').datetimepicker({
+            format: 'YYYY-MM-DD',
+
+            locale: moment.locale('zh-cn')
+
+        });
+
+    });
+
+    function button_1() {
+        $('#shangchuan').popover('show')
+        var spl = $("#myfile").val().split('\\');
+
+
+        if (confirm('是否将【' + spl[2] + '】数据上传至【' + $('#c1 option:selected').text() + '省】的【' + $('#c2 option:selected').text() + '】')) {
+
+            var formData = new FormData();
+            formData.append("myfile", $("#myfile").get(0).files[0]);
+            formData.append("pid", $('#c2').val());
+            $.ajax({
+                url: "{% url 'excel_upload' %}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == '上传文件类型错误') {
+                        alert("文件上传失败，检查文件是否正确")
+                    } else {
+                        alert("上传成功")
+                    }
+
+                },
+                error: function (data) {
+
+                    alert("上传失败！");
+
+                }
+            });
+        } else {
+            alert('检查省份城市是否正确')
+        }
+
+    }
+
+    function button_2() {
+        $('#yuce').popover('show')
+        $.ajax({
+            url: "{% url 'get_predict_data' %}",
+            dataType: 'json',
+            data: {
+                'name': $('#predict_data').text(),
+            },
+            success: function (arg) {
+
+                $('#tbody_id').html('');
+                for (var fac in arg) {
+                    $('#tbody_id').append('<tr><td>' + arg[fac].facname + '</td>+<td>' + arg[fac].ph + '</td><td>' + arg[fac].cod + '</td><td>' + arg[fac].nh4 + '</td><td>' + arg[fac].level + '</td></tr>')
+
+                }
+            }
+        })
+    }
+
+    function data_click() {
+        if (confirm("确定选择【" + $('#time').val() + '】这天的数据吗？')) {
+            $.ajax({
+                url: "{% url 'get_factory_data' %}",
+
+                dataType: 'json',
+                data: {
+                    'time': $('#time').val(),
+                },
+
+                success: function (arg) {
+                    t = JSON.parse(arg);
+                    $('#tbody_id1').html('');
+                    for (var fac in t) {
+                        $('#tbody_id1').append('<tr><td>' + t[fac].fields.name + '</td><td>' + t[fac].fields.date + '</td><td>' + t[fac].fields.ph + '</td><td>' + t[fac].fields.cod + '</td><td>' + t[fac].fields.nh4 + '</td><td>' + t[fac].fields.level + '</td></tr>')
+
+                    }
+                }
+            })
+        } else {
+            return false
+        }
+
+
+    }
+
+
+</script>
+
+
+
+{% endblock %}

@@ -1,0 +1,40 @@
+
+注：
+本次模型系统环境为Window系统，其安装教程来自tensorflow官网，如若下面解析不清楚，
+请访问官网： https://tensorflow.google.cn/install/pip#windows_1 可自行安装查看配置环境教程。
+
+系统要求：
+
+	Python 3.5-3.8
+
+若要支持 Python 3.8，需要使用 TensorFlow 2.2 或更高版本。
+pip 19.0 或更高版本（需要 manylinux2010 支持）
+Ubuntu 16.04 或更高版本（64 位）
+macOS 10.12.6 (Sierra) 或更高版本（64 位）（不支持 GPU）
+Windows 7 或更高版本（64 位）
+适用于 Visual Studio 2015、2017 和 2019 的 Microsoft Visual C++ 可再发行软件包
+Raspbian 9.0 或更高版本
+GPU 支持需要使用支持 CUDA® 的卡（适用于 Ubuntu 和 Windows）
+
+1. 在系统上安装 Python 开发环境
+
+	检查是否已配置 Python 环境：
+		python3 --version
+		pip3 --version
+
+2.创建虚拟环境（推荐）
+
+	创建一个新的虚拟环境，方法是选择 Python 解释器并创建一个 .\venv 目录来存放它：
+		python -m venv --system-site-packages .\venv
+	激活虚拟环境：
+
+		.\venv\Scripts\activate
+	在不影响主机系统设置的情况下，在虚拟环境中安装软件包。首先升级 pip：
+		pip install --upgrade pip
+	之后退出虚拟环境：
+		deactivate 
+	pip list  # 查看虚拟机所安装的包
+
+
+3.安装 TensorFlow pip 软件包（虚拟机安装）
+	pip install --upgrade tensorflow
